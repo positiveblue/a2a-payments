@@ -28,6 +28,44 @@ The system consists of a main agent that interacts with three specialized subage
 - Authenticates and processes L402 payments
 - Enables the main agent to pay for services/resources from other agents
 
+## System Diagram
+
+```mermaid
+graph TD
+    MainAgent[Main Agent] --> |1. Request pizza info| RecipesAgent[Recipes Agent]
+    RecipesAgent --> |2. Return recipe details| MainAgent
+    MainAgent --> |3. Request ingredient pricing| MarketplaceAgent[Marketplace Agent]
+    MarketplaceAgent --> |4. Generate L402 invoice| MainAgent
+    MainAgent --> |5. Request payment| WalletAgent[Wallet Agent]
+    WalletAgent --> |6. Process L402 payment| MainAgent
+    MainAgent --> |7. Submit payment proof| MarketplaceAgent
+    MarketplaceAgent --> |8. Release ingredients| MainAgent
+    
+    classDef mainAgent fill:#f96,stroke:#333,stroke-width:2px;
+    classDef subAgent fill:#bbf,stroke:#33f,stroke-width:1px;
+    
+    class MainAgent mainAgent;
+    class RecipesAgent,MarketplaceAgent,WalletAgent subAgent;
+```
+
+### Payment Flow Sequence
+
+```mermaid
+sequenceDiagram
+    participant Main as Main Agent
+    participant Recipes as Recipes Agent
+    participant Market as Marketplace Agent
+    participant Wallet as Wallet Agent
+    
+    Main->>Recipes: Request pizza details
+    Recipes->>Main: Return recipe information
+    Main->>Market: Request ingredient availability
+    Market->>Main: Return L402 invoice for ingredients
+    Main->>Wallet: Request to pay L402 invoice
+    Note right of Main: Got access to pizza ingredients
+
+```
+
 ## A2A Communication
 
 This example demonstrates how agents can:
